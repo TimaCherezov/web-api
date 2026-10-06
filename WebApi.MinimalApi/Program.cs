@@ -23,7 +23,12 @@ builder.Services.AddControllers(options =>
     .ConfigureApiBehaviorOptions(options => {
         options.SuppressModelStateInvalidFilter = true;
         options.SuppressMapClientErrors = true;
-    });
+    })
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+    });;
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.CreateMap<UserEntity, UserDto>()
