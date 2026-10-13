@@ -61,7 +61,7 @@ public class UsersController : Controller
     [HttpPut("{userId}")]
     public IActionResult UpdateUser([FromBody] UserUpdateRequest? user, Guid userId)
     {
-        if (user is null)
+        if (user is null || userId == Guid.Empty)
             return BadRequest();
         if (string.IsNullOrEmpty(user.Login))
         {
@@ -70,16 +70,20 @@ public class UsersController : Controller
 
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
+        
         var userEntity = _mapper.Map<UserEntity>(user, opt =>
         {
-            opt.Items["userId"] = userId;
+            opt.Items["Id"] = userId;
         });
+        
         _userRepository.UpdateOrInsert(userEntity, out var isInsterted);
         if (!isInsterted)
-            return BadRequest();
+            return NoContent();
         
-        var userDto = _mapper.Map<UserDto>(user);
+        var userDto = _mapper.Map<UserDto>(userEntity);
         
-        return Ok(userDto);
+        return CreatedAtRoute(
+            nameof(CreateUser),
+            userDto);
     }
 }
