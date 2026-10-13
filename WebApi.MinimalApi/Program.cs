@@ -36,6 +36,10 @@ builder.Services.AddAutoMapper(cfg =>
             => opt.MapFrom(src => $"{src.LastName} {src.FirstName}"));
 
     cfg.CreateMap<UserCreateRequest, UserEntity>();
+
+    cfg.CreateMap<UserEntity, UpdateDto>();
+    cfg.CreateMap<UpdateDto, UserEntity>();
+    
     cfg.CreateMap<UserUpdateRequest, UserEntity>()
         .ForCtorParam("id", opt =>
             opt.MapFrom((_, context) => context.Items["Id"]));
