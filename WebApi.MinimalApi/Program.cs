@@ -36,6 +36,7 @@ builder.Services.AddAutoMapper(cfg =>
             => opt.MapFrom(src => $"{src.LastName} {src.FirstName}"));
 
     cfg.CreateMap<UserCreateRequest, UserEntity>();
+    cfg.CreateMap<UserUpdateRequest, UserEntity>();
 
     // cfg.CreateMap<UserToUpdateDto, UserEntity>();
 }, Array.Empty<Assembly>());

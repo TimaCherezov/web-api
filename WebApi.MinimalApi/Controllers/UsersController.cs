@@ -57,4 +57,29 @@ public class UsersController : Controller
             new { userId = entity.Id },
             entity.Id);
     }
+    
+    [HttpPut("{userId}")]
+    public IActionResult UpdateUser([FromBody] UserUpdateRequest? user, Guid userId)
+    {
+        if (user is null)
+            return BadRequest();
+        if (string.IsNullOrEmpty(user.Login))
+        {
+            ModelState.AddModelError(nameof(user.Login), "Login is invalid");
+        }
+
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var userEntity = _mapper.Map<UserEntity>(user, opt =>
+        {
+            opt.Items["userId"] = userId;
+        });
+        _userRepository.UpdateOrInsert(userEntity, out var isInsterted);
+        if (!isInsterted)
+            return BadRequest();
+        
+        var userDto = _mapper.Map<UserDto>(user);
+        
+        return Ok(userDto);
+    }
 }
