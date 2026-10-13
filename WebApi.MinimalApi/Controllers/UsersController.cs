@@ -105,7 +105,7 @@ public class UsersController : Controller
     }
     
     [HttpPatch("{userId}")]
-    public IActionResult PartiallyUpdateUser ([FromBody] JsonPatchDocument<UpdateDto> patchDoc, Guid userId)
+    public IActionResult PartiallyUpdateUser ([FromBody] JsonPatchDocument<UpdateDto>? patchDoc, Guid userId)
     {
         if(patchDoc is null)
             return BadRequest();
@@ -128,10 +128,18 @@ public class UsersController : Controller
         return NoContent();
     }
 
+    [HttpGet(Name = nameof(GetUsers))]
+    public ActionResult<IEnumerable<UserDto>> GetUsers(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
+    {
+    }
+
+
     [HttpOptions]
     public IActionResult Options()
     {
-        Response.Headers.Add("Allow", "GET, POST, OPTIONS");
+        Response.Headers.Append("Allow", "GET, POST, OPTIONS");
         return Ok();
     }
 }
